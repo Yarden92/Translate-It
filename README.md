@@ -78,8 +78,11 @@ Always free, powered by open-source code.
 🔊 **Word and Sentence Pronunciation:**  
 Each translation comes with audio playback for accurate pronunciation. You can also choose from different accents. Click the extension icon to access advanced pronunciation options.
 
-📙 **Dictionary Mode:**  
+📙 **Dictionary Mode:**
 When selecting a word, you’ll not only get a translation but also helpful information like definitions, synonyms, word type, and usage examples.
+
+🔄 **Two-Way Translation:**
+When enabled, the extension automatically detects whether the text is in your chosen source or target language and translates to the other.
 
 ✅ **Supports Multiple Translation Providers:**  
 You can choose from several AI-powered translation providers:

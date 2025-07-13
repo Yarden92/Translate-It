@@ -29,8 +29,8 @@ export const CONFIG = {
   selectionTranslationMode: "onClick", // "immediate",
   COPY_REPLACE: "copy", // "replace",
   REPLACE_SPECIAL_SITES: true,
-  CHANGELOG_URL: "https://raw.githubusercontent.com/iSegaro/Translate-It/main/Changelog.md",
-
+  CHANGELOG_URL:
+    "https://raw.githubusercontent.com/iSegaro/Translate-It/main/Changelog.md",
 
   // --- API Settings ---
   TRANSLATION_API: "google", // gemini, webai, openai, openrouter, deepseek, custom, google
@@ -62,6 +62,7 @@ export const CONFIG = {
   TRANSLATE_ON_TEXT_SELECTION: true, // فعال کردن ترجمه با انتخاب متن در صفحه
   REQUIRE_CTRL_FOR_TEXT_SELECTION: false, // نیاز به نگه داشتن Ctrl هنگام انتخاب متن
   ENABLE_DICTIONARY: true, // با مکانیزم تشخیص کلمه، بعنوان دیکشنری پاسخ را نمایش میدهد
+  TWO_WAY_TRANSLATION: true, // تشخیص خودکار یکی از دو زبان و ترجمه به دیگری
 
   // --- UI & Styling ---
   HIGHTLIH_NEW_ELEMETN_RED: "2px solid red", // Note: typo in original key 'HIGHTLIH'? Should be HIGHLIGHT?
@@ -108,9 +109,9 @@ Output only the translated text:
 $_{TEXT}
 \`\`\`
 `,
-/*--- End PROMPT_BASE_SELECT ---*/
+  /*--- End PROMPT_BASE_SELECT ---*/
 
-/*--- Start PROMPT_BASE_SELECT ---*/
+  /*--- Start PROMPT_BASE_SELECT ---*/
   PROMPT_BASE_SELECT: `Act as a fluent and natural JSON translation service. The input is a JSON array where each object contains a "text" property.
 
 Your task:
@@ -127,10 +128,9 @@ Return **only** the translated JSON array. Do not include explanations, markdown
 $_{TEXT}
 \`\`\`
 `,
-/*--- End PROMPT_BASE_SELECT ---*/
+  /*--- End PROMPT_BASE_SELECT ---*/
 
-
-/*--- Start PROMPT_BASE_DICTIONARY ---*/
+  /*--- Start PROMPT_BASE_DICTIONARY ---*/
   PROMPT_BASE_DICTIONARY: `You are a $_{TARGET} dictionary service. Your job is to provide rich, fluent dictionary-style definitions while fully preserving the input structure and formatting.
 
 Follow these instructions:
@@ -150,7 +150,7 @@ Stylistic guidelines:
 $_{TEXT}
 \`\`\`
 `,
-/*--- End PROMPT_BASE_DICTIONARY ---*/
+  /*--- End PROMPT_BASE_DICTIONARY ---*/
 
   /*--- Start PROMPT_BASE_POPUP_TRANSLATE ---*/
   PROMPT_BASE_POPUP_TRANSLATE: `You are a translation service. Your task is to translate the input text into $_{TARGET}, while strictly preserving its structure, formatting, and line breaks.
@@ -168,7 +168,6 @@ $_{TEXT}
 \`\`\`
 `,
   /*--- End PROMPT_BASE_POPUP_TRANSLATE ---*/
-
 
   /*--- Start PROMPT_TEMPLATE ---*/
   PROMPT_TEMPLATE: `- If the input is in $_{SOURCE}, translate it into $_{TARGET} using fluent and natural language, while preserving the original intent.
@@ -256,7 +255,7 @@ if (Browser && Browser.storage && Browser.storage.onChanged) {
   });
 } else {
   logME(
-    "Browser.storage.onChanged not available. Settings cache might become stale."
+    "Browser.storage.onChanged not available. Settings cache might become stale.",
   );
 }
 
@@ -300,13 +299,16 @@ export const getApiUrlAsync = async () => {
 
 // Google Translate Specific
 export const getGoogleTranslateUrlAsync = async () => {
-  return getSettingValueAsync("GOOGLE_TRANSLATE_URL", CONFIG.GOOGLE_TRANSLATE_URL);
+  return getSettingValueAsync(
+    "GOOGLE_TRANSLATE_URL",
+    CONFIG.GOOGLE_TRANSLATE_URL,
+  );
 };
 
 export const getApplication_LocalizeAsync = async () => {
   return getSettingValueAsync(
     "APPLICATION_LOCALIZE",
-    CONFIG.APPLICATION_LOCALIZE
+    CONFIG.APPLICATION_LOCALIZE,
   );
 };
 
@@ -330,6 +332,13 @@ export const getEnableDictionaryAsync = async () => {
   return getSettingValueAsync("ENABLE_DICTIONARY", CONFIG.ENABLE_DICTIONARY);
 };
 
+export const getTwoWayTranslationAsync = async () => {
+  return getSettingValueAsync(
+    "TWO_WAY_TRANSLATION",
+    CONFIG.TWO_WAY_TRANSLATION,
+  );
+};
+
 export const getPromptAsync = async () => {
   return getSettingValueAsync("PROMPT_TEMPLATE", CONFIG.PROMPT_TEMPLATE);
 };
@@ -337,14 +346,14 @@ export const getPromptAsync = async () => {
 export const getPromptDictionaryAsync = async () => {
   return getSettingValueAsync(
     "PROMPT_BASE_DICTIONARY",
-    CONFIG.PROMPT_BASE_DICTIONARY
+    CONFIG.PROMPT_BASE_DICTIONARY,
   );
 };
 
 export const getPromptPopupTranslateAsync = async () => {
   return getSettingValueAsync(
     "PROMPT_BASE_POPUP_TRANSLATE",
-    CONFIG.PROMPT_BASE_POPUP_TRANSLATE
+    CONFIG.PROMPT_BASE_POPUP_TRANSLATE,
   );
 };
 
@@ -414,7 +423,7 @@ export const getOpenRouterApiKeyAsync = async () => {
 export const getOpenRouterApiModelAsync = async () => {
   return getSettingValueAsync(
     "OPENROUTER_API_MODEL",
-    CONFIG.OPENROUTER_API_MODEL
+    CONFIG.OPENROUTER_API_MODEL,
   );
 };
 
@@ -422,48 +431,45 @@ export const getOpenRouterApiModelAsync = async () => {
 export const getTranslateOnTextFieldsAsync = async () => {
   return getSettingValueAsync(
     "TRANSLATE_ON_TEXT_FIELDS",
-    CONFIG.TRANSLATE_ON_TEXT_FIELDS
+    CONFIG.TRANSLATE_ON_TEXT_FIELDS,
   );
 };
 
 export const getEnableShortcutForTextFieldsAsync = async () => {
   return getSettingValueAsync(
     "ENABLE_SHORTCUT_FOR_TEXT_FIELDS",
-    CONFIG.ENABLE_SHORTCUT_FOR_TEXT_FIELDS
+    CONFIG.ENABLE_SHORTCUT_FOR_TEXT_FIELDS,
   );
 };
 
 export const getTranslateWithSelectElementAsync = async () => {
   return getSettingValueAsync(
     "TRANSLATE_WITH_SELECT_ELEMENT",
-    CONFIG.TRANSLATE_WITH_SELECT_ELEMENT
+    CONFIG.TRANSLATE_WITH_SELECT_ELEMENT,
   );
 };
 
 export const getTranslateOnTextSelectionAsync = async () => {
   return getSettingValueAsync(
     "TRANSLATE_ON_TEXT_SELECTION",
-    CONFIG.TRANSLATE_ON_TEXT_SELECTION
+    CONFIG.TRANSLATE_ON_TEXT_SELECTION,
   );
 };
 
 export const getRequireCtrlForTextSelectionAsync = async () => {
   return getSettingValueAsync(
     "REQUIRE_CTRL_FOR_TEXT_SELECTION",
-    CONFIG.REQUIRE_CTRL_FOR_TEXT_SELECTION
+    CONFIG.REQUIRE_CTRL_FOR_TEXT_SELECTION,
   );
 };
 
 export const getCOPY_REPLACEAsync = async () => {
-  return getSettingValueAsync(
-    "COPY_REPLACE",
-    CONFIG.COPY_REPLACE
-  );
+  return getSettingValueAsync("COPY_REPLACE", CONFIG.COPY_REPLACE);
 };
 
 export const getREPLACE_SPECIAL_SITESAsync = async () => {
   return getSettingValueAsync(
     "REPLACE_SPECIAL_SITES",
-    CONFIG.REPLACE_SPECIAL_SITES
+    CONFIG.REPLACE_SPECIAL_SITES,
   );
 };

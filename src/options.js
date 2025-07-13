@@ -77,58 +77,59 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     themeAuto.addEventListener("change", async () => {
-      const newThemeToApply =
-        themeAuto.checked ? "auto"
-        : themeSwitch.checked ? "dark"
-        : "light";
+      const newThemeToApply = themeAuto.checked
+        ? "auto"
+        : themeSwitch.checked
+          ? "dark"
+          : "light";
       await Browser.storage.local.set({ THEME: newThemeToApply });
       setThemeControlsState(newThemeToApply);
     });
   }
 
   const selectionModeImmediateRadio = document.getElementById(
-    "selection-mode-immediate"
+    "selection-mode-immediate",
   );
   const selectionModeOnClickRadio = document.getElementById(
-    "selection-mode-onclick"
+    "selection-mode-onclick",
   );
   const selectionModeGroup = document.getElementById("selectionModeGroup");
 
   const extensionEnabledCheckbox = document.getElementById("extensionEnabled");
   const translateOnTextFieldsCheckbox = document.getElementById(
-    "translateOnTextFields"
+    "translateOnTextFields",
   );
   const enableShortcutForTextFieldsCheckbox = document.getElementById(
-    "enableShortcutForTextFields"
+    "enableShortcutForTextFields",
   );
 
   const copy_on_clipboadRadiobox = document.getElementById(
-    "textField-mode-Copy"
+    "textField-mode-Copy",
   );
   const replace_on_textfieldRadiobox = document.getElementById(
-    "textField-mode-replace"
+    "textField-mode-replace",
   );
   const replace_on_special_sitesCheckbox = document.getElementById(
-    "replace_on_special_sites"
+    "replace_on_special_sites",
   );
 
   const translateWithSelectElementCheckbox = document.getElementById(
-    "translateWithSelectElement"
+    "translateWithSelectElement",
   );
   const translateOnTextSelectionCheckbox = document.getElementById(
-    "translateOnTextSelection"
+    "translateOnTextSelection",
   );
   const requireCtrlForTextSelectionCheckbox = document.getElementById(
-    "requireCtrlForTextSelection"
+    "requireCtrlForTextSelection",
   );
   const textSelectionCtrlGroup = document.getElementById(
-    "textSelectionCtrlGroup"
+    "textSelectionCtrlGroup",
   );
   const enableDictionraryCheckbox =
     document.getElementById("enableDictionrary");
   const translationApiSelect = document.getElementById("translationApi");
   const googleApiSettingsInfo = document.getElementById(
-    "googleApiSettingsInfo"
+    "googleApiSettingsInfo",
   );
   const webAIApiSettings = document.getElementById("webAIApiSettings");
   const apiUrlSettingGroup = document
@@ -143,12 +144,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveSettingsButton = document.getElementById("saveSettings");
   const sourceLanguageInput = document.getElementById("sourceLanguage");
   const targetLanguageInput = document.getElementById("targetLanguage");
+  const twoWayTranslationCheckbox =
+    document.getElementById("twoWayTranslation");
   const geminiApiSettings = document.getElementById("geminiApiSettings");
   const openAIApiSettings = document.getElementById("openAIApiSettings");
   const openAIApiKeyInput = document.getElementById("openaiApiKey");
   const openAIModelInput = document.getElementById("openaiApiModel");
   const openRouterApiSettings = document.getElementById(
-    "openRouterApiSettings"
+    "openRouterApiSettings",
   );
   const openRouterApiKeyInput = document.getElementById("openrouterApiKey");
   const openRouterApiModelInput = document.getElementById("openrouterApiModel");
@@ -242,7 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Clear existing content and append new nodes
       container.textContent = ""; // Clear existing content
       Array.from(doc.body.childNodes).forEach((node) =>
-        container.appendChild(node)
+        container.appendChild(node),
       );
     } catch (error) {
       // Sanitize the error message before displaying it
@@ -252,11 +255,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(
         `<p>Could not load changelog. Error: ${sanitizedErrorMessage}</p>`,
-        "text/html"
+        "text/html",
       );
       container.textContent = "";
       Array.from(doc.body.childNodes).forEach((node) =>
-        container.appendChild(node)
+        container.appendChild(node),
       );
 
       logME("[Options] Failed to fetch changelog:", error);
@@ -289,16 +292,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isImmediateModeEnabled = selectionModeImmediateRadio.checked;
 
     selectionModeGroup.style.opacity = isTextSelectionEnabled ? "1" : "0.2";
-    selectionModeGroup.style.pointerEvents =
-      isTextSelectionEnabled ? "auto" : "none";
+    selectionModeGroup.style.pointerEvents = isTextSelectionEnabled
+      ? "auto"
+      : "none";
     selectionModeImmediateRadio.disabled = !isTextSelectionEnabled;
     selectionModeOnClickRadio.disabled = !isTextSelectionEnabled;
 
     const isCtrlGroupEnabled = isTextSelectionEnabled && isImmediateModeEnabled;
     requireCtrlForTextSelectionCheckbox.disabled = !isCtrlGroupEnabled;
     textSelectionCtrlGroup.style.opacity = isCtrlGroupEnabled ? "1" : "0.2";
-    textSelectionCtrlGroup.style.pointerEvents =
-      isCtrlGroupEnabled ? "auto" : "none";
+    textSelectionCtrlGroup.style.pointerEvents = isCtrlGroupEnabled
+      ? "auto"
+      : "none";
   }
 
   // --- Dependency Logic for Replace Mode ---
@@ -365,7 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         el.disabled = !isMasterEnabled;
         el.closest(".setting-group")?.classList.toggle(
           "disabled",
-          !isMasterEnabled
+          !isMasterEnabled,
         );
       }
     });
@@ -402,7 +407,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         el.disabled = isFinallyDisabled;
         el.closest(".radio-option, .setting-group")?.classList.toggle(
           "disabled",
-          isFinallyDisabled
+          isFinallyDisabled,
         );
       }
     });
@@ -415,33 +420,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (extensionEnabledCheckbox) {
     extensionEnabledCheckbox.addEventListener(
       "change",
-      updateOverallExtensionDependency
+      updateOverallExtensionDependency,
     );
   }
 
   enableShortcutForTextFieldsCheckbox?.addEventListener(
     "change",
-    updateOverallExtensionDependency
+    updateOverallExtensionDependency,
   );
   translateOnTextFieldsCheckbox?.addEventListener(
     "change",
-    updateOverallExtensionDependency
+    updateOverallExtensionDependency,
   );
 
   copy_on_clipboadRadiobox?.addEventListener(
     "change",
-    updateOverallExtensionDependency
+    updateOverallExtensionDependency,
   );
   replace_on_textfieldRadiobox?.addEventListener(
     "change",
-    updateOverallExtensionDependency
+    updateOverallExtensionDependency,
   );
 
   // --- Tab Navigation Logic ---
   function showTab(tabId) {
     if (!tabId) return;
     const activeContent = tabContentContainer.querySelector(
-      ".tab-content.active"
+      ".tab-content.active",
     );
     const targetContent = document.getElementById(tabId);
 
@@ -468,7 +473,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           activeContent.classList.remove("active");
           animate();
         },
-        150
+        150,
       );
     } else {
       animate();
@@ -620,6 +625,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       API_URL: apiUrlInput?.value?.trim() || CONFIG.API_URL,
       SOURCE_LANGUAGE: sourceLanguageInput?.value || CONFIG.SOURCE_LANGUAGE,
       TARGET_LANGUAGE: targetLanguageInput?.value || CONFIG.TARGET_LANGUAGE,
+      TWO_WAY_TRANSLATION:
+        twoWayTranslationCheckbox?.checked ?? CONFIG.TWO_WAY_TRANSLATION,
       PROMPT_TEMPLATE:
         promptTemplateInput?.value?.trim() || CONFIG.PROMPT_TEMPLATE,
       TRANSLATION_API: translationApiSelect?.value || CONFIG.TRANSLATION_API,
@@ -663,8 +670,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           ?.split(",")
           .map((s) => s.trim())
           .filter(Boolean) ?? [],
-      selectionTranslationMode:
-        selectionModeOnClickRadio?.checked ? "onClick" : "immediate",
+      selectionTranslationMode: selectionModeOnClickRadio?.checked
+        ? "onClick"
+        : "immediate",
       COPY_REPLACE: replace_on_textfieldRadiobox?.checked ? "replace" : "copy",
       REPLACE_SPECIAL_SITES:
         replace_on_special_sitesCheckbox?.checked ??
@@ -677,7 +685,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await updatePromptHelpText(settingsToSave);
       showStatus(
         await getTranslationString("OPTIONS_STATUS_SAVED_SUCCESS"),
-        "success"
+        "success",
       );
       setTimeout(() => showStatus(""), 2000);
     } catch (error) {
@@ -687,7 +695,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       showStatus(
         await getTranslationString("OPTIONS_STATUS_SAVED_FAILED"),
-        "error"
+        "error",
       );
       setTimeout(() => showStatus(""), 3000);
     }
@@ -761,6 +769,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (enableDictionraryCheckbox)
         enableDictionraryCheckbox.checked =
           settings.ENABLE_DICTIONARY ?? CONFIG.ENABLE_DICTIONARY;
+      if (twoWayTranslationCheckbox)
+        twoWayTranslationCheckbox.checked =
+          settings.TWO_WAY_TRANSLATION ?? CONFIG.TWO_WAY_TRANSLATION;
 
       // Populate text inputs and textareas
       if (sourceLanguageInput)
@@ -877,7 +888,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showStatus(
         (await getTranslationString("OPTIONS_STATUS_LOAD_FAILED")) ||
           "Failed to load settings.",
-        "error"
+        "error",
       );
     }
   }
@@ -907,7 +918,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       URL.revokeObjectURL(url);
       showStatus(
         await getTranslationString("OPTIONS_STATUS_EXPORT_SUCCESS"),
-        "success"
+        "success",
       );
       setTimeout(() => showStatus(""), 2000);
     } catch (error) {
@@ -917,7 +928,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       showStatus(
         await getTranslationString("OPTIONS_STATUS_EXPORT_FAILED"),
-        "error"
+        "error",
       );
       setTimeout(() => showStatus(""), 3000);
     }
@@ -931,7 +942,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await Browser.storage.local.set(importedSettings);
       showStatus(
         await getTranslationString("OPTIONS_STATUS_IMPORT_SUCCESS_RELOADING"),
-        "success"
+        "success",
       );
       setTimeout(() => window.location.reload(), 1500);
     } catch (error) {
@@ -941,7 +952,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       showStatus(
         await getTranslationString("OPTIONS_STATUS_IMPORT_FAILED"),
-        "error"
+        "error",
       );
       if (importFile) importFile.value = "";
       setTimeout(() => showStatus(""), 3000);

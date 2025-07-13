@@ -13,17 +13,19 @@
   "context_menu_shortcuts": { "message": "تنظیمات میانبرها" },
   "context_menu_help": { "message": "کمک مفید" },
   "context_menu_translate_with_selection": { "message": "ترجمه انتخابی" },
-  "context_menu_api_provider":{"message": "سرور API"},
-  "api_provider_google": {"message": "مترجم گوگل" },
-  "api_provider_gemini":{"message": "Gemini"},
-  "api_provider_webai":{"message": "WebAI"},
-  "api_provider_openai":{"message": "OpenAI"},
-  "api_provider_openrouter":{"message": "OpenRouter"},
-  "api_provider_deepseek":{"message": "DeepSeek"},
-  "api_provider_custom":{"message": "(OpenAI) سفارشی"},
+  "context_menu_api_provider": { "message": "سرور API" },
+  "api_provider_google": { "message": "مترجم گوگل" },
+  "api_provider_gemini": { "message": "Gemini" },
+  "api_provider_webai": { "message": "WebAI" },
+  "api_provider_openai": { "message": "OpenAI" },
+  "api_provider_openrouter": { "message": "OpenRouter" },
+  "api_provider_deepseek": { "message": "DeepSeek" },
+  "api_provider_custom": { "message": "(OpenAI) سفارشی" },
 
   "google_translate_settings_title": { "message": "مترجم Google" },
-  "google_translate_description": { "message": "از سرویس رایگان و عمومی Google Translate استفاده می کند. کلید API لازم نیست." },
+  "google_translate_description": {
+    "message": "از سرویس رایگان و عمومی Google Translate استفاده می کند. کلید API لازم نیست."
+  },
 
   "notification_update_title": { "message": "افزونه به‌روز شد" },
   "notification_update_message": {
@@ -34,11 +36,17 @@
   "options_description": { "message": "همه چیز رو ترجمه کنید، به سادگی." },
   "options_changelog_loading": { "message": "در حال بارگذاری تغییرات..." },
 
-  "options_error_same_languages": { "message": "زبان مبدا و مقصد نمی‌توانند یکی باشند." },
+  "options_error_same_languages": {
+    "message": "زبان مبدا و مقصد نمی‌توانند یکی باشند."
+  },
   "options_error_empty_language": { "message": "زبان را انتخاب نکرده‌اید." },
 
-  "export_settings_description":{"message":"تنظیمات فعلی خود را به یک فایل JSON برای پشتیبان‌گیری یا اشتراک‌گذاری صادر کنید."},
-  "import_settings_description":{"message":"وارد کردن تنظیمات فعلی شما را بازنویسی خواهد کرد. پس از وارد کردن موفقیت‌آمیز، صفحه دوباره بارگذاری خواهد شد."},
+  "export_settings_description": {
+    "message": "تنظیمات فعلی خود را به یک فایل JSON برای پشتیبان‌گیری یا اشتراک‌گذاری صادر کنید."
+  },
+  "import_settings_description": {
+    "message": "وارد کردن تنظیمات فعلی شما را بازنویسی خواهد کرد. پس از وارد کردن موفقیت‌آمیز، صفحه دوباره بارگذاری خواهد شد."
+  },
 
   "languages_tab_title": { "message": "زبان‌ها" },
   "activation_tab_title": { "message": "روش‌های ترجمه" },
@@ -62,6 +70,10 @@
   "target_language_label": { "message": "زبان مقصد" },
   "source_language_placeholder": { "message": "زبان مبدا را وارد کنید" },
   "target_language_placeholder": { "message": "زبان مقصد را وارد کنید" },
+  "two_way_translation_label": { "message": "ترجمه دوطرفه" },
+  "two_way_translation_description": {
+    "message": "اگر متن به هر يک از دو زبان باشد، به ديگری ترجمه می‌شود"
+  },
 
   "help_tab_title": { "message": "راهنما" },
   "about_tab_title": { "message": "تغییرات جدید" },
@@ -89,8 +101,8 @@
   "help_api_keys_content": {
     "message": "شما می‌توانید لینک وب‌سایت هر ارائه‌دهنده API را در تب **تنظیمات API** پیدا کنید. برای تولید کلید، باید در پلتفرم‌های مربوطه یک حساب کاربری ایجاد کنید."
   },
-  
-    "help_shortcut_content_p2": {
+
+  "help_shortcut_content_p2": {
     "message": "در **Chrome**، روند متفاوت است:"
   },
   "help_shortcut_content_chrome_li1": {
@@ -140,7 +152,7 @@
   "options_textField_mode_replace": {
     "message": "جایگذاری در فیلد متنی"
   },
-    "enable_replace_on_special_sites": {
+  "enable_replace_on_special_sites": {
     "message": "جایگذاری فقط در سایت‌های خاص (WhatsApp, Telegram, Instagram و غیره)"
   },
   "options_selection_mode_label": { "message": "حالت ترجمه متن انتخابی" },

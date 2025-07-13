@@ -7,6 +7,7 @@ import {
   getApiUrlAsync,
   getSourceLanguageAsync,
   getTargetLanguageAsync,
+  getTwoWayTranslationAsync,
   getTranslationApiAsync,
   getGoogleTranslateUrlAsync,
   getWebAIApiUrlAsync,
@@ -113,7 +114,7 @@ class ApiService {
         (item) =>
           typeof item === "object" &&
           item !== null &&
-          typeof item.text === "string"
+          typeof item.text === "string",
       )
     );
   }
@@ -224,7 +225,7 @@ class ApiService {
         originalJsonStruct = parsed;
         textsToTranslate = originalJsonStruct.map((item) => item.text);
       }
-    } catch (e) {
+    } catch {
       // Not a valid JSON, proceed in plain text mode.
     }
 
@@ -272,7 +273,7 @@ class ApiService {
       const translatedParts = translatedTextBlob.split(TEXT_DELIMITER);
       if (translatedParts.length !== originalJsonStruct.length) {
         logME(
-          "Google Translate: JSON reconstruction failed due to segment mismatch."
+          "Google Translate: JSON reconstruction failed due to segment mismatch.",
         );
         return translatedTextBlob; // Fallback to returning the raw translated blob
       }
@@ -311,7 +312,7 @@ class ApiService {
       text,
       sourceLang,
       targetLang,
-      translateMode
+      translateMode,
     );
     const url = `${apiUrl}?key=${apiKey}`;
     const fetchOptions = {
@@ -352,7 +353,7 @@ class ApiService {
       text,
       sourceLang,
       targetLang,
-      translateMode
+      translateMode,
     );
     const fetchOptions = {
       method: "POST",
@@ -401,7 +402,7 @@ class ApiService {
       text,
       sourceLang,
       targetLang,
-      translateMode
+      translateMode,
     );
     const fetchOptions = {
       method: "POST",
@@ -447,7 +448,7 @@ class ApiService {
       text,
       sourceLang,
       targetLang,
-      translateMode
+      translateMode,
     );
     const fetchOptions = {
       method: "POST",
@@ -473,7 +474,7 @@ class ApiService {
     text,
     sourceLang,
     targetLang,
-    translateMode
+    translateMode,
   ) {
     const [apiKey, model] = await Promise.all([
       getOpenRouterApiKeyAsync(),
@@ -491,7 +492,7 @@ class ApiService {
       text,
       sourceLang,
       targetLang,
-      translateMode
+      translateMode,
     );
     const fetchOptions = {
       method: "POST",
@@ -532,7 +533,7 @@ class ApiService {
       text,
       sourceLang,
       targetLang,
-      translateMode
+      translateMode,
     );
     const fetchOptions = {
       method: "POST",
@@ -573,8 +574,8 @@ class ApiService {
     if (await getUseMockAsync()) {
       await delay(MOCK_DELAY);
       const sample = text.substring(0, 50);
-      return isPersianText(sample) ?
-          CONFIG.DEBUG_TRANSLATED_ENGLISH
+      return isPersianText(sample)
+        ? CONFIG.DEBUG_TRANSLATED_ENGLISH
         : CONFIG.DEBUG_TRANSLATED_PERSIAN;
     }
 
@@ -585,10 +586,30 @@ class ApiService {
       throw err;
     }
 
-    let [sourceLanguage, targetLanguage] = await Promise.all([
+    let [sourceLanguage, targetLanguage, twoWayMode] = await Promise.all([
       srcLang || getSourceLanguageAsync(),
       tgtLang || getTargetLanguageAsync(),
+      getTwoWayTranslationAsync(),
     ]);
+
+    if (twoWayMode) {
+      try {
+        const detectionResult = await Browser.i18n.detectLanguage(text);
+        if (
+          detectionResult?.isReliable &&
+          detectionResult.languages.length > 0
+        ) {
+          const detectedLangCode =
+            detectionResult.languages[0].language.split("-")[0];
+          const tgtCode = getLanguageCode(targetLanguage).split("-")[0];
+          if (detectedLangCode === tgtCode) {
+            [sourceLanguage, targetLanguage] = [targetLanguage, sourceLanguage];
+          }
+        }
+      } catch (e) {
+        logME("[API] detectLanguage failed", e);
+      }
+    }
 
     const api = await getTranslationApiAsync();
 
@@ -605,7 +626,7 @@ class ApiService {
           text,
           newSourceLanguage,
           newTargetLanguage,
-          translateMode
+          translateMode,
         );
       }
 
@@ -637,7 +658,7 @@ class ApiService {
           ) {
             sourceLanguage = mainDetection.language;
             logME(
-              `[API Logic] Overriding source. Reason: High confidence (${mainDetection.percentage}%) in Select Element.`
+              `[API Logic] Overriding source. Reason: High confidence (${mainDetection.percentage}%) in Select Element.`,
             );
           }
 
@@ -650,7 +671,7 @@ class ApiService {
         // TODO: این روش هنوز ۱۰۰ دردصد تست نشده و احتمال داره که باعث تداخل شود
         else {
           logME(
-            "[API Logic] Language detection was not reliable. Using Regex fallback."
+            "[API Logic] Language detection was not reliable. Using Regex fallback.",
           );
           const targetLangCode = getLanguageCode(targetLanguage).split("-")[0];
 
@@ -661,7 +682,7 @@ class ApiService {
             (targetLangCode === "fa" || targetLangCode === "ar")
           ) {
             logME(
-              "[API Logic] Regex fallback: Detected RTL text matches RTL target. Swapping languages."
+              "[API Logic] Regex fallback: Detected RTL text matches RTL target. Swapping languages.",
             );
             // زبان‌ها را جابجا کن تا به زبان مبدأ کاربر (مثلاً انگلیسی) ترجمه شود
             [sourceLanguage, targetLanguage] = [targetLanguage, sourceLanguage];
@@ -671,7 +692,7 @@ class ApiService {
       } catch (e) {
         logME(
           "[API Logic] Language detection failed. Proceeding with default target.",
-          e
+          e,
         );
       }
     }
@@ -692,42 +713,42 @@ class ApiService {
           text,
           sourceLanguage,
           targetLanguage,
-          translateMode
+          translateMode,
         );
       case "webai":
         return this.handleWebAITranslation(
           text,
           sourceLanguage,
           targetLanguage,
-          translateMode
+          translateMode,
         );
       case "openai":
         return this.handleOpenAITranslation(
           text,
           sourceLanguage,
           targetLanguage,
-          translateMode
+          translateMode,
         );
       case "openrouter":
         return this.handleOpenRouterTranslation(
           text,
           sourceLanguage,
           targetLanguage,
-          translateMode
+          translateMode,
         );
       case "deepseek":
         return this.handleDeepSeekTranslation(
           text,
           sourceLanguage,
           targetLanguage,
-          translateMode
+          translateMode,
         );
       case "custom":
         return this.handleCustomTranslation(
           text,
           sourceLanguage,
           targetLanguage,
-          translateMode
+          translateMode,
         );
       default: {
         const err = new Error(ErrorTypes.AI_MODEL_MISSING);

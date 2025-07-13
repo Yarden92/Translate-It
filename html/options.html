@@ -209,6 +209,20 @@
                   placeholder="Enter target language"
                 />
               </div>
+              <div class="setting-group">
+                <label
+                  for="twoWayTranslation"
+                  data-i18n="two_way_translation_label"
+                  >Two-Way Translation</label
+                >
+                <input type="checkbox" id="twoWayTranslation" />
+                <span
+                  class="setting-description"
+                  data-i18n="two_way_translation_description"
+                  >Automatically detect which language is used and translate to
+                  the other.</span
+                >
+              </div>
             </section>
           </div>
 
@@ -293,16 +307,17 @@
                     </div>
                   </div>
                   <div
-                      class="setting-group sub-setting-group"
-                      id="copyOnTextfieldGroup"
+                    class="setting-group sub-setting-group"
+                    id="copyOnTextfieldGroup"
+                  >
+                    <label
+                      for="replace_on_special_sites"
+                      data-i18n="enable_replace_on_special_sites"
+                      >Enable replace on special sites (Whatsapp, Telegram,
+                      etc.)</label
                     >
-                      <label
-                        for="replace_on_special_sites"
-                        data-i18n="enable_replace_on_special_sites"
-                        >Enable replace on special sites (Whatsapp, Telegram, etc.)</label
-                      >
-                      <input type="checkbox" id="replace_on_special_sites" />
-                    </div>
+                    <input type="checkbox" id="replace_on_special_sites" />
+                  </div>
                 </div>
               </fieldset>
 

@@ -612,3 +612,18 @@ input:checked + .slider:before {
     transform: translateY(0);
   }
 }
+
+/* Link below translation result to open Google Translate */
+.google-translate-link {
+  display: none;
+  margin-top: 4px;
+  font-size: 12px;
+  text-decoration: none;
+  color: var(--toolbar-link-color);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.google-translate-link:hover {
+  background-color: var(--toolbar-link-hover-bg-color);
+}

@@ -45,6 +45,10 @@ async function handleTranslationResponse(
   sourceLangIdentifier,
   targetLangIdentifier
 ) {
+  // Hide Google Translate link by default
+  if (elements.googleResultLink) {
+    elements.googleResultLink.style.display = "none";
+  }
   // ❶ WebExtension channel error
   if (Browser.runtime.lastError) {
     const msg = Browser.runtime.lastError.message;
@@ -76,6 +80,26 @@ async function handleTranslationResponse(
     elements.translationResult.classList.add("fade-in");
 
     correctTextDirection(elements.translationResult, translated);
+
+    if (elements.googleResultLink) {
+      const sl =
+        getLanguageCode(sourceLangIdentifier) ||
+        response.data.detectedSourceLang ||
+        "auto";
+      const tl = getLanguageCode(targetLangIdentifier) || "auto";
+      const encoded = encodeURIComponent(textToTranslate);
+      elements.googleResultLink.href =
+        `https://translate.google.com/?sl=${sl}&tl=${tl}&text=${encoded}&op=translate`;
+      elements.googleResultLink.textContent =
+        (await getTranslationString(
+          "popup_open_in_google_translate_link"
+        )) || "Open in Google Translate";
+      elements.googleResultLink.title =
+        (await getTranslationString(
+          "popup_open_in_google_translate_title"
+        )) || "Open in Google Translate";
+      elements.googleResultLink.style.display = "inline-block";
+    }
 
     const sourceLangCode = getLanguageCode(sourceLangIdentifier);
     const targetLangCode = getLanguageCode(targetLangIdentifier);
@@ -134,6 +158,9 @@ async function handleTranslationResponse(
     elements.translationResult.innerHTML = "";
     elements.translationResult.textContent = msg;
     correctTextDirection(elements.translationResult, msg);
+    if (elements.googleResultLink) {
+      elements.googleResultLink.style.display = "none";
+    }
 
     logME("[Translate-Popup] API error:", msg);
   }
@@ -146,6 +173,10 @@ async function triggerTranslation() {
   const textToTranslate = elements.sourceText.value.trim();
   const targetLangIdentifier = elements.targetLanguageInput.value.trim();
   const sourceLangIdentifier = elements.sourceLanguageInput.value.trim();
+
+  if (elements.googleResultLink) {
+    elements.googleResultLink.style.display = "none";
+  }
 
   if (!textToTranslate) {
     elements.sourceText.focus();

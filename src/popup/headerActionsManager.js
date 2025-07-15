@@ -19,6 +19,9 @@ function setupEventListeners() {
       .then(async () => {
         elements.sourceText.value = "";
         elements.translationResult.textContent = "";
+        if (elements.googleResultLink) {
+          elements.googleResultLink.style.display = "none";
+        }
         uiManager.toggleInlineToolbarVisibility(elements.sourceText);
         uiManager.toggleInlineToolbarVisibility(elements.translationResult);
 

@@ -10,6 +10,7 @@ export default {
   translationForm: $("translationForm"),
   sourceText: $("sourceText"),
   translationResult: $("translationResult"),
+  googleResultLink: $("googleResultLink"),
   sourceContainer: $("sourceText")?.parentElement,
   resultContainer: $("translationResult")?.parentElement,
 

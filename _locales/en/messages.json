@@ -297,6 +297,8 @@
   "popup_copy_target_title_icon": { "message": "Copy target text" },
   "popup_voice_target_alt_icon": { "message": "Speak target" },
   "popup_voice_target_title_icon": { "message": "Speak" },
+  "popup_open_in_google_translate_link": { "message": "Open in Google Translate" },
+  "popup_open_in_google_translate_title": { "message": "View this text on Google Translate" },
   "popup_string_during_translate": { "message": "translating..." },
   "popup_string_error_sending": { "message": "Error sending request." },
   "popup_string_error_response_empty": { "message": "(translation is empty)" },

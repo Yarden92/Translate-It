@@ -5,19 +5,20 @@ import elements from "./domElements.js";
 import * as uiManager from "./uiManager.js";
 import { getTargetLanguageAsync } from "../config.js";
 import { getLanguageDisplayValue } from "./languageManager.js"; // Use lookup
-import { AUTO_DETECT_VALUE } from "../utils/tts.js";
+import { AUTO_DETECT_VALUE, getLanguageCode } from "../utils/tts.js";
 import { logME } from "../utils/helpers.js";
 import { correctTextDirection } from "../utils/textDetection.js";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
+import { getTranslationString } from "../utils/i18n.js";
 
 async function loadLastTranslationFromStorage(setDefaultTargetLang = true) {
   try {
     const result = await Browser.storage.local.get(["lastTranslation"]);
     let targetLangValue = "";
 
-    if (result.lastTranslation) {
-      logME("[InitManager]: Loading last translation from storage.");
+      if (result.lastTranslation) {
+        logME("[InitManager]: Loading last translation from storage.");
 
       elements.sourceText.value = result.lastTranslation.sourceText || "";
       correctTextDirection(
@@ -33,10 +34,10 @@ async function loadLastTranslationFromStorage(setDefaultTargetLang = true) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(sanitized.toString(), "text/html");
 
-      elements.translationResult.textContent = "";
-      Array.from(doc.body.childNodes).forEach((node) => {
-        elements.translationResult.appendChild(node);
-      });
+        elements.translationResult.textContent = "";
+        Array.from(doc.body.childNodes).forEach((node) => {
+          elements.translationResult.appendChild(node);
+        });
 
       correctTextDirection(
         elements.translationResult,
@@ -47,15 +48,39 @@ async function loadLastTranslationFromStorage(setDefaultTargetLang = true) {
         getLanguageDisplayValue(result.lastTranslation.sourceLanguage) ||
         AUTO_DETECT_VALUE;
 
-      targetLangValue = getLanguageDisplayValue(
-        result.lastTranslation.targetLanguage
-      );
-    } else {
-      logME("[InitManager]: No last translation found in storage.");
-      elements.sourceText.value = "";
-      elements.translationResult.textContent = "";
-      elements.sourceLanguageInput.value = AUTO_DETECT_VALUE;
-    }
+        targetLangValue = getLanguageDisplayValue(
+          result.lastTranslation.targetLanguage
+        );
+
+        if (elements.googleResultLink) {
+          const sl =
+            getLanguageCode(result.lastTranslation.sourceLanguage) || "auto";
+          const tl =
+            getLanguageCode(result.lastTranslation.targetLanguage) || "auto";
+          const encoded = encodeURIComponent(
+            result.lastTranslation.sourceText || ""
+          );
+          elements.googleResultLink.href =
+            `https://translate.google.com/?sl=${sl}&tl=${tl}&text=${encoded}&op=translate`;
+          elements.googleResultLink.textContent =
+            (await getTranslationString(
+              "popup_open_in_google_translate_link"
+            )) || "Open in Google Translate";
+          elements.googleResultLink.title =
+            (await getTranslationString(
+              "popup_open_in_google_translate_title"
+            )) || "Open in Google Translate";
+          elements.googleResultLink.style.display = "inline-block";
+        }
+      } else {
+        logME("[InitManager]: No last translation found in storage.");
+        elements.sourceText.value = "";
+        elements.translationResult.textContent = "";
+        elements.sourceLanguageInput.value = AUTO_DETECT_VALUE;
+        if (elements.googleResultLink) {
+          elements.googleResultLink.style.display = "none";
+        }
+      }
 
     if (
       (setDefaultTargetLang && !targetLangValue) ||
@@ -128,6 +153,9 @@ async function loadInitialState() {
           );
           uiManager.toggleInlineToolbarVisibility(elements.sourceText);
           uiManager.toggleInlineToolbarVisibility(elements.translationResult);
+          if (elements.googleResultLink) {
+            elements.googleResultLink.style.display = "none";
+          }
         } else {
           logME(
             "[InitManager]: No selected text received. Loading from storage."

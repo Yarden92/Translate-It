@@ -9,4 +9,3 @@ Build-Extension/*.zip
 Build-Extension/Publish/Source-*.zip
 package-lock.json
 */**/.DS_Store
-

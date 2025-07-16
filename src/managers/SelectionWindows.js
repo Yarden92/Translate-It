@@ -3,9 +3,16 @@
 import Browser from "webextension-polyfill";
 import { logME, isExtensionContextValid } from "../utils/helpers";
 import { ErrorTypes } from "../services/ErrorTypes.js";
-import { CONFIG, TranslationMode, getThemeAsync } from "../config.js";
+import {
+  CONFIG,
+  TranslationMode,
+  getThemeAsync,
+  getSourceLanguageAsync,
+  getTargetLanguageAsync,
+} from "../config.js";
 import { getResolvedUserTheme } from "../utils/theme.js";
-import { AUTO_DETECT_VALUE } from "../utils/tts.js";
+import { AUTO_DETECT_VALUE, getLanguageCode } from "../utils/tts.js";
+import { normalizeLangCode } from "../utils/langUtils.js";
 import { determineTranslationMode } from "../utils/translationModeHelper.js";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
@@ -48,7 +55,7 @@ export default class SelectionWindows {
     if (changes.THEME && this.displayElement && this.isVisible) {
       logME(
         "[SelectionWindows] Theme changed, updating popup theme.",
-        changes.THEME.newValue
+        changes.THEME.newValue,
       );
       this._applyThemeToHost();
     }
@@ -204,7 +211,7 @@ export default class SelectionWindows {
 
     const translationMode = determineTranslationMode(
       selectedText,
-      TranslationMode.Selection
+      TranslationMode.Selection,
     );
 
     logME("[SelectionWindows] Creating translation window ", translationMode);
@@ -245,6 +252,8 @@ export default class SelectionWindows {
         :host(.theme-dark) .tts-icon { filter: invert(90%) brightness(1.1); }
         .text-content a { color: var(--sw-link-color); text-decoration: none; }
         .text-content a:hover { text-decoration: underline; }
+        .google-link { color: var(--sw-link-color); font-size: 12px; text-decoration: none; display: block; margin-top: 6px; text-align: right; }
+        .google-link:hover { text-decoration: underline; }
       `;
       shadowRoot.appendChild(style);
     }
@@ -283,11 +292,11 @@ export default class SelectionWindows {
             txt,
             loading,
             selectedText,
-            translationMode
+            translationMode,
           );
         } else {
           throw new Error(
-            response?.error?.message || response?.error || ErrorTypes.SERVICE
+            response?.error?.message || response?.error || ErrorTypes.SERVICE,
           );
         }
       })
@@ -417,11 +426,11 @@ export default class SelectionWindows {
     return container;
   }
 
-  transitionToTranslatedText(
+  async transitionToTranslatedText(
     translatedText,
     loadingContainer,
     originalText,
-    trans_Mode
+    trans_Mode,
   ) {
     if (!this.innerContainer || !this.displayElement) return;
     if (
@@ -435,7 +444,7 @@ export default class SelectionWindows {
     firstLine.classList.add("first-line");
     const ttsIconOriginal = this.createTTSIcon(
       originalText,
-      CONFIG.SOURCE_LANGUAGE || "listen"
+      CONFIG.SOURCE_LANGUAGE || "listen",
     );
     firstLine.appendChild(ttsIconOriginal);
     if (trans_Mode === TranslationMode.Dictionary_Translation) {
@@ -464,6 +473,11 @@ export default class SelectionWindows {
     secondLine.appendChild(textSpan);
     this.applyTextDirection(secondLine, translatedText);
     this.innerContainer.appendChild(secondLine);
+
+    const gLink = await this.createGoogleTranslateLink(originalText);
+    if (gLink) {
+      this.innerContainer.appendChild(gLink);
+    }
     requestAnimationFrame(() => {
       if (this.displayElement) {
         this.displayElement.style.transition = `opacity 0.15s ease-in-out`;
@@ -491,6 +505,39 @@ export default class SelectionWindows {
     return icon;
   }
 
+  async createGoogleTranslateLink(originalText) {
+    try {
+      const [srcLang, tgtLang] = await Promise.all([
+        getSourceLanguageAsync(),
+        getTargetLanguageAsync(),
+      ]);
+
+      const srcCode =
+        srcLang === AUTO_DETECT_VALUE
+          ? "auto"
+          : normalizeLangCode(getLanguageCode(srcLang));
+      const tgtCode =
+        tgtLang === AUTO_DETECT_VALUE
+          ? "auto"
+          : normalizeLangCode(getLanguageCode(tgtLang));
+
+      const baseUrl = "https://translate.google.com/";
+      const url =
+        baseUrl +
+        `?sl=${srcCode}&tl=${tgtCode}&text=${encodeURIComponent(originalText)}&op=translate`;
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.textContent = "Google Translate";
+      link.classList.add("google-link");
+      return link;
+    } catch (err) {
+      logME("[SelectionWindows] Failed to create Google link", err);
+      return null;
+    }
+  }
+
   async handleTranslationError(error, loadingContainer) {
     if (
       loadingContainer &&
@@ -510,9 +557,9 @@ export default class SelectionWindows {
       this.dismiss(false);
     }
     const errObj =
-      error instanceof Error ? error : (
-        new Error(String(error.message || error))
-      );
+      error instanceof Error
+        ? error
+        : new Error(String(error.message || error));
     await this.translationHandler.errorHandler.handle(errObj, {
       type: errObj.type || ErrorTypes.API,
       context: "selection-window-translate",
@@ -557,14 +604,14 @@ export default class SelectionWindows {
           clearTimeout(fallbackTimeout);
           this.removeElement(el);
         },
-        { once: true }
+        { once: true },
       );
     } else {
       this.removeElement(this.displayElement);
     }
   }
 
-    _cleanupIcon(removeListener = true) {
+  _cleanupIcon(removeListener = true) {
     // فقط در صورتی که آیکونی برای حذف وجود داشته باشد، ادامه بده
     if (this.icon) {
       const iconElement = this.icon; // یک رفرنس به عنصر آیکون نگه می‌داریم
@@ -575,8 +622,8 @@ export default class SelectionWindows {
       // --- افزودن انیمیشن ناپدید شدن ---
 
       // 1. با تغییر استایل، انیمیشن بازگشت (ناپدید شدن) را فعال می‌کنیم
-      iconElement.style.opacity = '0';
-      iconElement.style.transform = 'scale(0.5)';
+      iconElement.style.opacity = "0";
+      iconElement.style.transform = "scale(0.5)";
 
       // 2. یک تایمر تنظیم می‌کنیم تا عنصر را پس از پایان انیمیشن از DOM حذف کند
       // زمان تایمر باید با زمان transition در استایل هماهنگ باشد (مثلاً 150 میلی‌ثانیه)
@@ -636,7 +683,7 @@ export function dismissAllSelectionWindows() {
   } catch (err) {
     logME(
       "[SelectionWindows] Unknown error in dismissAllSelectionWindows:",
-      err
+      err,
     );
   }
 }

@@ -1,5 +1,17 @@
 # Translate It!
 
+## How to build:
+- `npm install`
+- `npm run build:chrome`
+## How to install
+- open chrome > `chrome://extensions/`
+- Load unpacked
+- browse to `./Build-Extension/Chrome/Translate-It-v$$$` (choose the folder itself)
+
+<details>
+  <summary>Old stuff</summary>
+
+
 > Smart Translation Assistant - Web Extension
 
 <p align="center">
@@ -489,3 +501,5 @@ year 2025
 [webai-to-api-url-docs]: https://github.com/Amm1rr/WebAI-to-API/
 [pnpm-url]: https://pnpm.io/
 [node-js-url]: https://nodejs.org/
+
+</details>

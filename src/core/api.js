@@ -105,6 +105,51 @@ class ApiService {
     this.sessionContext = null;
   }
 
+  _resolveNormalizedLanguageCode(lang) {
+    return normalizeLangCode(getLanguageCode(lang) || lang);
+  }
+
+  _isHebrewEnglishPair(sourceLanguage, targetLanguage) {
+    const src = this._resolveNormalizedLanguageCode(sourceLanguage);
+    const tgt = this._resolveNormalizedLanguageCode(targetLanguage);
+    return (
+      (src === "he" && tgt === "en") ||
+      (src === "en" && tgt === "he")
+    );
+  }
+
+  _detectHeEnFromFirstWord(text) {
+    const firstWord = (text || "").trim().split(/\s+/)[0] || "";
+    if (!firstWord) return null;
+
+    let englishCount = 0;
+    let hebrewCount = 0;
+
+    for (const ch of firstWord) {
+      if (/[A-Za-z]/.test(ch)) englishCount += 1;
+      else if (/[\u0590-\u05FF]/.test(ch)) hebrewCount += 1;
+    }
+
+    if (englishCount === 0 && hebrewCount === 0) return null;
+    if (englishCount === hebrewCount) return null;
+
+    return hebrewCount > englishCount ? "he" : "en";
+  }
+
+  async _detectRoutingLanguage(text, sourceLanguage, targetLanguage) {
+    if (this._isHebrewEnglishPair(sourceLanguage, targetLanguage)) {
+      const fastDetected = this._detectHeEnFromFirstWord(text);
+      if (fastDetected) {
+        return {
+          isReliable: true,
+          languages: [{ language: fastDetected, percentage: 100 }],
+        };
+      }
+    }
+
+    return Browser.i18n.detectLanguage(text);
+  }
+
   _isSpecificTextJsonFormat(obj) {
     return (
       Array.isArray(obj) &&
@@ -593,9 +638,12 @@ class ApiService {
 
     if (twoWayEnabled) {
       try {
-        const detection = await Browser.i18n.detectLanguage(text);
+        const detection = await this._detectRoutingLanguage(
+          text,
+          sourceLanguage,
+          targetLanguage
+        );
         const detected = normalizeLangCode(detection?.languages?.[0]?.language);
-        const srcCode = normalizeLangCode(getLanguageCode(sourceLanguage));
         const tgtCode = normalizeLangCode(getLanguageCode(targetLanguage));
         if (detected && detected === tgtCode) {
           [sourceLanguage, targetLanguage] = [targetLanguage, sourceLanguage];
@@ -627,7 +675,11 @@ class ApiService {
       // Scenario 2: other translation modes (SelectElement, Selection, Popup)
       // Decides whether to swap languages or lock the source language for accuracy.
       try {
-        const detectionResult = await Browser.i18n.detectLanguage(text);
+        const detectionResult = await this._detectRoutingLanguage(
+          text,
+          sourceLanguage,
+          targetLanguage
+        );
 
         // First layer: check if language detection is reliable
         if (
